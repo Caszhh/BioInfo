@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Complex Analysis</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+    <header>
+        <h1>Complex Program - DNA Analysis</h1>
+    </header>
+
+    <main>
+        <section>
+            <h2>Code:</h2>
+            <pre><code>
+// DNA sequence analysis program
+DNA_SEQ sample1 = "ATGCTAGCTAGCTAG"
+DNA_SEQ sample2 = "GCTAGCTAGCTACGT"
+
+// Print original sequences
+print("Sample 1:")
+print(sample1)
+print("Sample 2:")
+print(sample2)
+
+// Find motifs of different lengths
+motifs1 = sample1.findMotifs(3, 5)
+print("Motifs in Sample 1 (length 3-5):")
+print(motifs1)
+
+motifs2 = sample2.findMotifs(4, 6)
+print("Motifs in Sample 2 (length 4-6):")
+print(motifs2)
+            </code></pre>
+        </section>
+
+        <section>
+            <h2>Output:</h2>
+            <div class="output-box">
+                <p><strong>Sample 1:</strong> ATGCTAGCTAGCTAG</p>
+                <p><strong>Sample 2:</strong> GCTAGCTAGCTACGT</p>
+                <p>Motifs in Sample 1 (length 3-5): [...]</p>
+                <p>Motifs in Sample 2 (length 4-6): [...]</p>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <p><a href="index.html">Back to Examples</a></p>
+    </footer>
+</body>
+
+</html>
