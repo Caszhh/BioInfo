@@ -1,3 +1,0 @@
-DNA_SEQ dnaSample = "ATGCTTGACCCTGAGACCCTGAGGTC"
-motifs = dnaSample.findMotifs("ACCCT")
-print(motifs)
