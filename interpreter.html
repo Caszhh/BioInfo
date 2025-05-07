@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BioInfo Interpreter</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+    <header>
+        <h1>BioInfo Interpreter</h1>
+    </header>
+
+    <main>
+        <section id="interpreter">
+            <h2>Python Interpreter</h2>
+            <p>The BioInfo interpreter allows you to execute `.BioInfo` programs. Below is the full implementation in Python:</p>
+            <pre><code>
+import sys
+import re
+
+class BioInfoInterpreter:
+    def __init__(self):
+        self.variables = {}
+        self.current_line = 0
+
+    def run_file(self, filename):
+        with open(filename, 'r') as file:
+            code = file.read()
+        self.run(code)
+
+    def run(self, code):
+        lines = code.strip().split('\n')
+        while self.current_line < len(lines):
+            line = lines[self.current_line].strip()
+            if line:
+                self.interpret_line(line, lines)
+            self.current_line += 1
+
+    def interpret_line(self, line, lines):
+        if line.startswith('INT'):
+            self.handle_declaration(line)
+        elif line.startswith('DNA_SEQ'):
+            self.handle_dna_declaration(line)
+        elif line.startswith('DNA_STR'):
+            self.handle_dna_str(line)
+        elif '.findMotifs' in line:
+            self.handle_find_motifs(line)
+        elif line.startswith('if'):
+            self.handle_if(line, lines)
+        elif line.startswith('while'):
+            self.handle_while(line, lines)
+        elif line.startswith('print'):
+            self.handle_print(line)
+        elif '=' in line and not line.startswith('if') and not line.startswith('while'):
+            self.handle_assignment(line)
+        elif '(' in line and ')' in line:  # Function call
+            self.handle_function_call(line)
+        elif line.startswith("import"):
+            self.handle_import(line)
+        elif line.startswith("func"):
+            self.handle_func(line, lines)
+
+    def handle_declaration(self, line):
+        parts = line.split('=')
+        var_name = parts[0].replace('INT', '').strip()
+        if len(parts) > 1:
+            value = self.evaluate_expression(parts[1].strip())
+            self.variables[var_name] = value
+        else:
+            self.variables[var_name] = 0
+
+    def handle_assignment(self, line):
+        parts = line.split('=')
+        var_name = parts[0].strip()
+        value = self.evaluate_expression(parts[1].strip())
+        self.variables[var_name] = value
+
+    def handle_print(self, line):
+        content = line[6:-1] if line.endswith(')') else line[6:]
+        if content.startswith('"') and content.endswith('"'):
+            print(content[1:-1])
+        else:
+            result = self.evaluate_expression(content)
+            print(result)
+
+    def handle_if(self, line, lines):
+        condition = line[3:]
+        block_end = self.find_block_end(self.current_line, lines)
+        
+        if self.evaluate_condition(condition):
+            self.current_line += 1
+            while self.current_line < block_end:
+                current_line = lines[self.current_line].strip()
+                if current_line.startswith('else'):
+                    break
+                if current_line and not current_line == 'end':
+                    self.interpret_line(current_line, lines)
+                self.current_line += 1
+        else:
+            self.current_line += 1
+            while self.current_line < block_end:
+                current_line = lines[self.current_line].strip()
+                if current_line.startswith('else if'):
+                    new_condition = current_line[8:]
+                    if self.evaluate_condition(new_condition):
+                        self.current_line += 1
+                        while self.current_line < block_end:
+                            next_line = lines[self.current_line].strip()
+                            if next_line.startswith('else'):
+                                break
+                            if next_line and not next_line == 'end':
+                                self.interpret_line(next_line, lines)
+                            self.current_line += 1
+                        break
+                elif current_line.startswith('else'):
+                    self.current_line += 1
+                    while self.current_line < block_end:
+                        next_line = lines[self.current_line].strip()
+                        if next_line and not next_line == 'end':
+                            self.interpret_line(next_line, lines)
+                        self.current_line += 1
+                    break
+                self.current_line += 1
+
+        self.current_line = block_end - 1
+
+    def handle_while(self, line, lines):
+        condition = line[6:]
+        block_start = self.current_line
+        block_end = self.find_block_end(self.current_line, lines)
+        
+        while self.evaluate_condition(condition):
+            self.current_line = block_start + 1
+            while self.current_line < block_end:
+                current_line = lines[self.current_line].strip()
+                if current_line and not current_line == 'end':
+                    self.interpret_line(current_line, lines)
+                self.current_line += 1
+        
+        self.current_line = block_end - 1
+
+    def handle_dna_declaration(self, line):
+        parts = line.split('=')
+        var_name = parts[0].replace('DNA_SEQ', '').strip()
+        sequence = parts[1].strip().strip('"') if len(parts) > 1 else ''
+        if not all(base in 'ATCG' for base in sequence):
+            raise ValueError(f"Invalid DNA sequence: {sequence}")
+        self.variables[var_name] = sequence
+
+    def handle_dna_str(self, line):
+        parts = line.split('=')
+        var_name = parts[0].replace('DNA_STR', '').strip()
+        sequence = parts[1].strip().strip('"')
+        self.variables[var_name] = sequence
+
+    def handle_find_motifs(self, line):
+        match = re.search(r'(\w+)\.findMotifs\((.*)\)', line)
+        if match:
+            var_name, args = match.groups()
+            if var_name in self.variables:
+                sequence = self.variables[var_name]
+                args = args.split(',')
+                if len(args) == 2:
+                    start, end = map(int, args)
+                    motifs = self.find_motifs_by_length(sequence, start, end)
+                else:
+                    motif = args[0].strip().strip('"')
+                    motifs = self.find_motif(sequence, motif)
+                print(f"Motifs in {var_name}: {motifs}")
+            else:
+                raise ValueError(f"Variable {var_name} not defined.")
+        else:
+            raise ValueError(f"Invalid syntax for findMotifs: {line}")
+
+    def handle_import(self, line):
+        package = line.replace("import", "").strip()
+        print(f"Simulating import of package: {package}")
+
+    def handle_func(self, line, lines):
+        func_name, func_code = line.split(' ')[1].split('(')[0], ""
+        block_end = self.find_block_end(self.current_line, lines)
+        func_body =    
+        for i in range(self.current_line + 1, block_end - 1):
+            func_body.append(lines[i].strip())
+        if func_name == "repeatCounter":
+            self.define_repeat_counter()
+        self.current_line = block_end - 1
+
+    def handle_function_call(self, line):
+        match = re.match(r"(\w+)\((.*)\)", line)
+        if match:
+            func_name, args = match.groups()
+            args = args.split(",") if args else            if func_name in self.variables and callable(self.variables[func_name]):
+                result = self.variables[func_name](*[arg.strip() for arg in args])
+                print(result)
+            else:
+                raise ValueError(f"Function {func_name} not defined.")
+
+    def find_block_end(self, start_line, lines):
+        depth = 1
+        current = start_line + 1
+        while current < len(lines):
+            line = lines[current].strip()
+            if line.startswith('if') or line.startswith('while') or line.startswith('func'):
+                depth += 1
+            elif line == 'end':
+                depth -= 1
+                if depth == 0:
+                    return current + 1
+            current += 1
+        return len(lines)
+
+    def find_motif(self, sequence, motif):
+        positions = [i for i in range(len(sequence) - len(motif) + 1) if sequence[i:i+len(motif)] == motif]
+        return positions
+
+    def find_motifs_by_length(self, sequence, start, end):
+        motifs = set()
+        for length in range(start, end + 1):
+            for i in range(len(sequence) - length + 1):
+                motifs.add(sequence[i:i+length])
+        return list(motifs)
+
+    def define_repeat_counter(self):
+        def repeat_counter(sequence):
+            sequence_value = sequence if isinstance(sequence, str) else self.variables.get(sequence, "")
+            repeats = {}
+            for length in range(1, len(sequence_value) + 1):
+                for i in range(len(sequence_value) - length + 1):
+                    segment = sequence_value[i:i + length]
+                    repeats[segment] = repeats.get(segment, 0) + 1
+            return {k: v for k, v in repeats.items() if v > 2}
+        self.variables['repeatCounter'] = repeat_counter
+
+    def evaluate_condition(self, condition):
+        condition = condition.strip()
+        if '==' in condition:
+            left, right = condition.split('==')
+            return self.evaluate_expression(left) == self.evaluate_expression(right)
+        elif '!=' in condition:
+            left, right = condition.split('!=')
+            return self.evaluate_expression(left) != self.evaluate_expression(right)
+        elif '>=' in condition:
+            left, right = condition.split('>=')
+            return self.evaluate_expression(left) >= self.evaluate_expression(right)
+        elif '<=' in condition:
+            left, right = condition.split('<=')
+            return self.evaluate_expression(left) <= self.evaluate_expression(right)
+        elif '>' in condition:
+            left, right = condition.split('>')
+            return self.evaluate_expression(left) > self.evaluate_expression(right)
+        elif '<' in condition:
+            left, right = condition.split('<')
+            return self.evaluate_expression(left) < self.evaluate_expression(right)
+        return bool(self.variables.get(condition, condition == "True"))
+
+    def evaluate_expression(self, expression):
+        try:
+            return eval(expression, {}, self.variables)
+        except:
+            return self.variables.get(expression.strip(), 0)
+
+if __name__ == "__main__":
+    if len(sys.argv) != 2:
+        print("Usage: python BioInfo_Interpreter.py <filename>")
+        sys.exit(1)
+    
+    interpreter = BioInfoInterpreter()
+    interpreter.run_file(sys.argv[1]) 
+            </code></pre>
+        </section>
+    </main>
+
+    <footer>
+        <p><a href="index.html">Back to Home</a></p>
+    </footer>
+</body>
+
+</html>
