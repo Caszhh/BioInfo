@@ -1,0 +1,6 @@
+import BioCode.Genomics
+import BioCode.Visualization
+
+// BioInfo Program to Print a Simple Message
+print("Hello, BioInfo World!")
+print("This is a simple demonstration of the language.")
