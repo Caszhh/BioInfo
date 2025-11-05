@@ -1,0 +1,198 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>BioInfo Language</title>
+  <link rel="stylesheet" href="styles.css" />
+  <meta name="color-scheme" content="dark light" />
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <!-- NAV -->
+  <header class="nav">
+    <div class="container nav-inner">
+      <a class="brand" href="index.html" aria-label="BioInfo home">
+        <svg width="24" height="24" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9" fill="url(#g)"/><defs><radialGradient id="g"><stop offset="0" stop-color="#34d399"/><stop offset="1" stop-color="#06b6d4"/></radialGradient></defs></svg>
+        <span>BioInfo Lang</span>
+      </a>
+      <nav aria-label="Primary" class="nav-links">
+        <a href="#overview">Overview</a>
+        <a href="#examples">Examples</a>
+        <a href="interpreter.html">Interpreter</a>
+        <a href="#download">Download</a>
+        <a href="about.html">Docs</a>
+      </nav>
+      <div class="nav-cta">
+        <a class="btn btn-primary" href="interpreter.html">Try Online</a>
+      </div>
+    </div>
+  </header>
+
+  <!-- HERO -->
+  <main id="main">
+    <section class="hero">
+      <div class="container hero-grid">
+        <div class="hero-copy">
+          <p id="greeting" class="eyebrow">Good afternoon</p>
+          <h1 class="display">Make <span class="grad">bioinformatics</span> feel like magic.</h1>
+          <p class="lead">
+            A research-first language for DNA/RNA parsing, SNP/STR analysis, and quick alignment —
+            designed for clarity, speed, and cognitive flow.
+          </p>
+          <div class="actions">
+            <a class="btn btn-primary" href="interpreter.html">Launch Interpreter</a>
+            <a class="btn btn-ghost" href="#examples">View Examples</a>
+          </div>
+
+          <ul class="stats" aria-label="Stats">
+            <li><strong>&lt; 7s</strong><span>time to first result</span></li>
+            <li><strong>65+</strong><span>genomics ops</span></li>
+            <li><strong>3,200+</strong><span>researchers</span></li>
+          </ul>
+        </div>
+
+        <!-- Subtle animated DNA (CSS anim; reduced-motion safe) -->
+        <div class="hero-art" aria-hidden="true">
+          <svg class="dna" viewBox="0 0 420 680" role="img">
+            <!-- rails -->
+            <path class="rail" d="M90,20 C250,120 250,560 90,660" />
+            <path class="rail" d="M330,20 C170,120 170,560 330,660" />
+            <!-- rungs -->
+            <g class="rungs">
+              <!-- JS will clone/animate these with CSS keyframes -->
+              <line x1="120" y1="80" x2="300" y2="80" />
+            </g>
+          </svg>
+        </div>
+      </div>
+    </section>
+
+    <!-- OVERVIEW / FEATURES -->
+    <section id="overview" class="section">
+      <div class="container">
+        <h2>Overview</h2>
+        <div class="grid-3">
+          <article class="card feature">
+            <div class="icon i-flask" aria-hidden="true"></div>
+            <h3>Genetic primitives</h3>
+            <p>First-class types for DNA/RNA, k-mers, SNP/STR, and VCF streams.</p>
+          </article>
+          <article class="card feature">
+            <div class="icon i-cpu" aria-hidden="true"></div>
+            <h3>Accelerated algorithms</h3>
+            <p>Multi-threaded motif search, Smith-Waterman, and FM-index helpers.</p>
+          </article>
+          <article class="card feature">
+            <div class="icon i-tool" aria-hidden="true"></div>
+            <h3>Ergonomic tooling</h3>
+            <p>REPL, notebooks, and a batteries-included standard library.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- EXAMPLES + LIVE DEMO -->
+    <section id="examples" class="section alt">
+      <div class="container examples-grid">
+        <div class="examples-left">
+          <div class="section-head">
+            <h2>Code Examples</h2>
+            <p class="muted">Copy any snippet and run it in the REPL.</p>
+          </div>
+
+          <div class="card code">
+            <header>
+              <h3>Motif search</h3>
+              <button class="copy" data-copy="let seq = DNA(&quot;ACGTACGTGATACAAGT&quot;);
+let hits = find_motif(seq, &quot;ACGT&quot;);
+print(hits)  // -> [0, 4]">Copy</button>
+            </header>
+<pre><code>let seq = DNA("ACGTACGTGATACAAGT");
+let hits = find_motif(seq, "ACGT");
+print(hits)  // -> [0, 4]</code></pre>
+          </div>
+
+          <div class="card code">
+            <header>
+              <h3>VCF slicing</h3>
+              <button class="copy" data-copy="let vcf = VCF::open(&quot;cohort.vcf.gz&quot;);
+let snps = vcf.filter(chr: &quot;7&quot;, pos: 117199646..117199900);
+export(snps, to: &quot;out/snps.tsv&quot;)">Copy</button>
+            </header>
+<pre><code>let vcf = VCF::open("cohort.vcf.gz");
+let snps = vcf.filter(chr: "7", pos: 117199646..117199900);
+export(snps, to: "out/snps.tsv")</code></pre>
+          </div>
+
+          <ul class="links">
+            <!-- Wire to your existing example pages -->
+            <li><a href="example1.html">Example 1</a></li>
+            <li><a href="example2.html">Example 2</a></li>
+            <li><a href="example3.html">Example 3</a></li>
+            <li><a href="example4.html">Example 4</a></li>
+            <li><a href="example5.html">Example 5</a></li>
+            <li><a href="hello_world.BioInfo">Hello, BioInfo</a></li>
+          </ul>
+        </div>
+
+        <!-- Live Motif Finder -->
+        <aside class="card demo">
+          <header>
+            <h3>Live Motif Finder</h3>
+            <p class="muted">Type a DNA sequence and motif. Exact matches highlight in real time.</p>
+          </header>
+
+          <label class="label">DNA Sequence</label>
+          <input id="seq" class="input" value="ACGTACGTACGTGATACAAGT" aria-describedby="seq-help" />
+          <div id="seq-help" class="help">Only A/C/G/T are used; others are stripped.</div>
+
+          <label class="label">Motif</label>
+          <input id="motif" class="input" value="ACGT" maxlength="12" />
+          <div class="result" id="result" aria-live="polite"></div>
+        </aside>
+      </div>
+    </section>
+
+    <!-- DOWNLOAD & DOCS -->
+    <section id="download" class="section">
+      <div class="container grid-2">
+        <article class="card">
+          <h2 class="tight">Download</h2>
+          <p class="muted">macOS • Linux • Windows</p>
+          <div class="btn-row">
+            <a class="btn btn-primary" href="#">macOS (ARM)</a>
+            <a class="btn btn-ghost" href="#">Linux (x64)</a>
+            <a class="btn btn-ghost" href="#">Windows (x64)</a>
+          </div>
+          <p class="install">or:</p>
+          <pre class="install-line"><code>pip install bioinfo</code></pre>
+        </article>
+
+        <article class="card">
+          <h2 class="tight">Documentation</h2>
+          <ul class="doc-links">
+            <li><a href="about.html">Getting Started</a></li>
+            <li><a href="moreaboutus.html">Language Basics</a></li>
+            <li><a href="interpreter.html">Interpreter Guide</a></li>
+          </ul>
+        </article>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="container footer-inner">
+      <span>© <span id="year"></span> BioInfo Language</span>
+      <nav class="footer-links" aria-label="Secondary">
+        <a href="about.html">Privacy</a>
+        <a href="about.html">Terms</a>
+        <a href="about.html">Contact</a>
+      </nav>
+    </div>
+  </footer>
+
+  <script src="script.js" defer></script>
+</body>
+</html>

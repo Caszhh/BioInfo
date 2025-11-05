@@ -1,0 +1,40 @@
+# Declare an integer variable
+INT count = 0
+
+# Declare a DNA sequence
+DNA_SEQ dna = "ATGCGATCGAATGCGT"
+
+# Declare a short repeating DNA string
+DNA_STR repeat = "ATG"
+
+# Define a function to count repeats in the DNA string
+func repeatCounter(sequence)
+    print("Counting repeats:")
+    return sequence.repeatCounter()
+end
+
+# Call the defined function with the DNA sequence and store the result
+INT repeats = repeatCounter(dna)
+
+# Print the repeats dictionary (substrands with counts > 2)
+print(repeats)
+
+# Search for specific motifs
+print("Finding specific motif 'ATG' positions:")
+dna.findMotifs("ATG")
+
+# Use a loop to count the number of DNA bases
+while count < len(dna)
+    count = count + 1
+end
+
+# Print the number of DNA bases
+print("Number of DNA bases:")
+print(count)
+
+# Conditional check to print a message if a specific condition is met
+if repeats > 0
+    print("Repeats were found in the DNA sequence.")
+else
+    print("No repeats were found in the DNA sequence.")
+end

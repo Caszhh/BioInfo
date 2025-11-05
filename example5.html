@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Complex Program - Extended Analysis</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+    <header>
+        <h1>Complex Program 2 - Extended Analysis</h1>
+    </header>
+
+    <main>
+        <section>
+            <h2>Code:</h2>
+            <pre><code>
+# Define a DNA sequence
+DNA_SEQ myDNA = "ATGCGCATGCGCATGCAA"
+
+# Find the positions of a specific motif
+myDNA.findMotifs("GCG")
+
+# Count the number of DNA bases
+print("Total number of bases in the DNA sequence:")
+print(myDNA)
+
+# Calculate the GC content percentage
+INT gc_count = (myDNA.count("G") + myDNA.count("C")) * 100 / myDNA.count("")
+print("GC content percentage:")
+print(gc_count)
+
+# Transcribe the DNA sequence to RNA
+DNA_STR myRNA = myDNA.replace("T", "U")
+print("Transcribed RNA sequence:")
+print(myRNA)
+            </code></pre>
+        </section>
+
+        <section>
+            <h2>Output:</h2>
+            <div class="output-box">
+                <p>Motifs in myDNA: [2, 8]</p>
+                <p>Total number of bases in the DNA sequence: ATGCGCATGCGCATGCAA</p>
+                <p>GC content percentage: 52.63</p>
+                <p>Transcribed RNA sequence: AUGCGCAUGCGCAUGCAA</p>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <p><a href="index.html">Back to Examples</a></p>
+    </footer>
+</body>
+
+</html>
