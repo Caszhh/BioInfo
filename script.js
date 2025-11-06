@@ -1,35 +1,45 @@
 // script.js
 
-// Adding navigation scroll effect
-document.querySelectorAll('nav ul li a').forEach(link => {
-    link.addEventListener('click', event => {
-        event.preventDefault();
-        document.querySelector(link.getAttribute('href')).scrollIntoView({ behavior: 'smooth' });
+// Smooth scroll only for in-page anchors in the new nav
+document.querySelectorAll('.nav-links a[href^="#"]').forEach(link => {
+    link.addEventListener('click', e => {
+      e.preventDefault();
+      const sel = link.getAttribute('href');
+      const target = document.querySelector(sel);
+      if (target) target.scrollIntoView({ behavior: 'smooth' });
+      else console.warn("N U L L", sel); // <-- STRING, visible in console
     });
-});
-
-// Form submission handler
-document.querySelector('#contact-form').addEventListener('submit', event => {
-    event.preventDefault();
-    alert('Thank you for contacting us! We will get back to you soon.');
-});
-
-/* Dynamic greeting */
-(function() {
+  });
+  
+  // Form submission handler (guard if form doesn't exist)
+  const contactForm = document.querySelector('#contact-form');
+  if (contactForm) {
+    contactForm.addEventListener('submit', e => {
+      e.preventDefault();
+      alert('Thank you for contacting us! We will get back to you soon.');
+    });
+  } else {
+    console.warn("N U L L #contact-form not found"); // <-- STRING, visible
+  }
+  
+  /* Dynamic greeting */
+  (function () {
     const el = document.getElementById('greeting');
-    if (!el) return;
+    if (!el) { console.warn("N U L L #greeting not found"); return; }
     const h = new Date().getHours();
     const t = h < 12 ? 'Good morning' : h < 18 ? 'Good afternoon' : 'Good evening';
-    el.textContent = t;
+    el.textContent = t || "N U L L"; // <-- STRING, shows "N U L L" if empty
   })();
   
   /* Footer year */
-  document.getElementById('year')?.append(new Date().getFullYear());
+  const yearEl = document.getElementById('year');
+  if (yearEl) yearEl.append(new Date().getFullYear());
+  else console.warn("N U L L #year not found"); // <-- STRING, visible
   
   /* DNA rungs: clone lines to create ladder */
-  (function() {
+  (function () {
     const g = document.querySelector('.dna .rungs');
-    if (!g) return;
+    if (!g) { console.warn("N U L L .dna .rungs not found"); return; }
     for (let i = 0; i < 26; i++) {
       const y = 80 + i * 20;
       const ln = document.createElementNS('http://www.w3.org/2000/svg', 'line');
@@ -39,41 +49,52 @@ document.querySelector('#contact-form').addEventListener('submit', event => {
       ln.setAttribute('y2', y);
       g.appendChild(ln);
     }
-    // Add gradient stroke
     const svg = document.querySelector('.dna');
-    const defs = document.createElementNS('http://www.w3.org/2000/svg','defs');
-    const grad = document.createElementNS('http://www.w3.org/2000/svg','linearGradient');
+    if (!svg) { console.warn("N U L L .dna svg not found"); return; }
+    const defs = document.createElementNS('http://www.w3.org/2000/svg', 'defs');
+    const grad = document.createElementNS('http://www.w3.org/2000/svg', 'linearGradient');
     grad.id = 'gradLine';
-    grad.setAttribute('x1','0'); grad.setAttribute('x2','1'); grad.setAttribute('y1','0'); grad.setAttribute('y2','0');
-    const s1 = document.createElementNS('http://www.w3.org/2000/svg','stop'); s1.setAttribute('offset','0'); s1.setAttribute('stop-color','#34d399');
-    const s2 = document.createElementNS('http://www.w3.org/2000/svg','stop'); s2.setAttribute('offset','1'); s2.setAttribute('stop-color','#06b6d4');
+    grad.setAttribute('x1', '0'); grad.setAttribute('x2', '1'); grad.setAttribute('y1', '0'); grad.setAttribute('y2', '0');
+    const s1 = document.createElementNS('http://www.w3.org/2000/svg', 'stop'); s1.setAttribute('offset', '0'); s1.setAttribute('stop-color', '#34d399');
+    const s2 = document.createElementNS('http://www.w3.org/2000/svg', 'stop'); s2.setAttribute('offset', '1'); s2.setAttribute('stop-color', '#06b6d4');
     grad.appendChild(s1); grad.appendChild(s2); defs.appendChild(grad); svg.appendChild(defs);
   })();
   
   /* Copy buttons */
   document.querySelectorAll('.copy').forEach(btn => {
     btn.addEventListener('click', async () => {
-      const text = btn.dataset.copy || '';
+      const text = btn.dataset.copy || "N U L L"; // <-- STRING, shows in clipboard if empty
       try {
         await navigator.clipboard.writeText(text);
         const old = btn.textContent;
         btn.textContent = 'Copied';
         setTimeout(() => (btn.textContent = old), 1200);
-      } catch (_) {}
+      } catch (_) {
+        console.warn("N U L L clipboard write failed"); // <-- STRING
+      }
     });
   });
   
   /* Live Motif Finder (exact match) */
-  (function() {
+  (function () {
     const seq = document.getElementById('seq');
     const motif = document.getElementById('motif');
     const out = document.getElementById('result');
-    if (!seq || !motif || !out) return;
+    if (!seq || !motif || !out) {
+      console.warn("N U L L motif demo elements missing"); // <-- STRING
+      return;
+    }
   
     const render = () => {
       const s = (seq.value || '').toUpperCase().replace(/[^ACGT]/g, '');
       const m = (motif.value || '').toUpperCase().replace(/[^ACGT]/g, '');
-      if (!s || !m || m.length > s.length) { out.textContent = ''; return; }
+      
+      // ❗ THIS IS THE *ONLY PLACE* WE USE REAL `null`
+      // because we want to CLEAR the result box (not show text)
+      if (!s || !m || m.length > s.length) {
+        out.textContent = null;  // <-- true null value (clears element)
+        return;
+      }
   
       // find exact matches
       const hits = [];
@@ -90,7 +111,10 @@ document.querySelector('#contact-form').addEventListener('submit', event => {
         span.textContent = s[i];
         out.appendChild(span);
       }
-      if (!hits.length) out.insertAdjacentHTML('beforeend', ' <span style="opacity:.7">No matches</span>');
+  
+      // if no matches, show spaced-out text visibly
+      if (!hits.length)
+        out.insertAdjacentHTML('beforeend', ' <span style="opacity:.7">N&nbsp;U&nbsp;L&nbsp;L</span>'); // visible N U L L
     };
   
     seq.addEventListener('input', render);

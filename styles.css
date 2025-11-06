@@ -327,3 +327,99 @@ body{background:linear-gradient(180deg,var(--bg),#0a1020 60%,#090e1a); color:var
   .hero-grid, .examples-grid, .grid-3, .grid-2{grid-template-columns:1fr}
   .stats{flex-wrap:wrap}
 }
+
+/* ==== FORCE DARK THEME & KILL OLD LIGHT OVERRIDES ==== */
+:root { color-scheme: dark; } /* advertise dark to the browser */
+
+@media (prefers-color-scheme: light) {
+  :root{
+    --bg:#0b1220;
+    --bg-alt:#0e1629;
+    --card:rgba(255,255,255,.06);
+    --card-border:rgba(255,255,255,.12);
+    --line:rgba(255,255,255,.12);
+    --text:#f8fafc;
+    --muted:#cbd5e1;
+  }
+}
+
+/* make sure hero is not getting a white panel from older CSS */
+.hero,
+.section,
+.container { background: transparent !important; }
+
+/* nuke any leftover white overlays from older styles */
+.hero::before,
+.hero::after { content:none !important; }
+
+/* ensure hero text is fully opaque */
+.hero { opacity: 1 !important; }
+.hero * { opacity: 1 !important; }
+
+/* ===== FINAL OVERRIDES (place at end of file) ===== */
+
+/* Force dark tokens even if OS is light */
+:root { color-scheme: dark; }
+@media (prefers-color-scheme: light) {
+  :root{
+    --bg:#0b1220;
+    --bg-alt:#0e1629;
+    --card:rgba(255,255,255,.06);
+    --card-border:rgba(255,255,255,.12);
+    --line:rgba(255,255,255,.12);
+    --text:#f8fafc;
+    --muted:#cbd5e1;
+  }
+}
+
+/* Kill legacy generic header/section/footer styling */
+header.nav { 
+  background: rgba(10,15,30,.5) !important; 
+  padding: 0 !important; 
+  border: none !important;
+}
+section { background: transparent !important; box-shadow: none !important; }
+footer.footer { 
+  background: rgba(0,0,0,.25) !important; 
+  color: var(--text) !important; 
+  border-top-left-radius: 0 !important; 
+  border-top-right-radius: 0 !important;
+}
+
+/* Ensure hero and containers are transparent (no white panels) */
+.hero, .section, .container { background: transparent !important; }
+.hero::before, .hero::after { content: none !important; }
+.hero, .hero * { opacity: 1 !important; }
+
+/* TEMP CANARY (remove after you confirm live) */
+body { outline: 4px solid magenta !important; }
+.hero .display::after { 
+  content: " — BUILD v7"; 
+  color: #67e8f9; 
+  font-weight: 800;
+}
+
+/* ===== FINAL OVERRIDES (must be last) ===== */
+:root { color-scheme: dark; }
+@media (prefers-color-scheme: light) {
+  :root{
+    --bg:#0b1220; --bg-alt:#0e1629;
+    --card:rgba(255,255,255,.06);
+    --card-border:rgba(255,255,255,.12);
+    --line:rgba(255,255,255,.12);
+    --text:#f8fafc; --muted:#cbd5e1;
+  }
+}
+
+/* Kill any legacy generic white backgrounds */
+header.nav { background: rgba(10,15,30,.5) !important; padding:0 !important; border:none !important; }
+section { background: transparent !important; box-shadow:none !important; }
+footer.footer { background: rgba(0,0,0,.25) !important; color: var(--text) !important; }
+
+/* Ensure hero isn’t washed out */
+.hero, .section, .container { background: transparent !important; }
+.hero::before, .hero::after { content:none !important; }
+
+/* CANARY (remove after you confirm live) */
+body { outline: 4px solid magenta !important; }
+
