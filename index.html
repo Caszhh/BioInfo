@@ -1,12 +1,24 @@
 <!doctype html>
 <html lang="en">
-<head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>BioInfo Language</title>
-  <link rel="stylesheet" href="styles.css" />
-  <meta name="color-scheme" content="dark light" />
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width,initial-scale=1" />
+        <title>BioInfo Language</title>
+      
+        <!-- Use project-relative paths on GitHub Pages (repo name is /BioInfo) -->
+        <link rel="stylesheet" href="/BioInfo/styles.css?v=7" />
+
+  <!-- 🔧 Quick override: kill the white backgrounds -->
+  <style>
+    :root { color-scheme: dark; }
+    body { background: #0b1220; color: #f8fafc; }
+    /* nuke legacy white panels */
+    section, .section, .hero, .container { background: transparent !important; box-shadow: none !important; }
+    header.nav { background: rgba(10,15,30,.5) !important; border: 0 !important; }
+    .hero::before, .hero::after { content: none !important; }
+  </style>
 </head>
+
 <body>
   <a class="skip-link" href="#main">Skip to content</a>
 
@@ -193,6 +205,6 @@ export(snps, to: "out/snps.tsv")</code></pre>
     </div>
   </footer>
 
-  <script src="script.js" defer></script>
+  <script src="/BioInfo/script.js?v=13" defer></script>
 </body>
 </html>
